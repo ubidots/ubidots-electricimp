@@ -1,6 +1,3 @@
-// Copyright (c) 2013 Electric Imp
-// This file is licensed under the MIT License
-// http://opensource.org/licenses/MIT
 
 // create a namespace
 
@@ -22,11 +19,11 @@ class Ubidots.Client {
         if (SERVER != null) this._SERVER = SERVER;
     }
 
-/** 
-* This function is to get variable information from the Ubidots API
-* @arg 
-* @return 
-*/
+    /*********************************************************************
+     * This function is to get variable information from the Ubidots API
+     * @arg 
+     * @return 
+     *********************************************************************/
     function get(dsLabel, varLabel){
 
         local headers = { "Content-Type": "application/json", "X-Auth-Token": _token};
@@ -41,11 +38,11 @@ class Ubidots.Client {
         return response.body;
     }
 
-/**
-* This function is to get the last value from the Ubidots API
-* @arg labels the labels where you will get the data (Data Source and Variable)
-* @return num the data that you get from the Ubidots API
-**/
+    /*********************************************************************
+     * This function is to get the last value from the Ubidots API
+     * @arg labels the labels where you will get the data (Data Source and Variable)
+     * @return num the data that you get from the Ubidots API
+     *********************************************************************/
     function getLastValue(dsLabel, varLabel){
 
         local table = http.jsondecode(get());
@@ -53,10 +50,10 @@ class Ubidots.Client {
         return value;
     }
 
-/**
-* Send all data of all variables that you saved
-* @reutrn true upon success, false upon error.
-*/
+    /*********************************************************************
+     * Send the data of all variables that you added
+     * @reutrn 
+     ********************************************************************/
     function sendtoUbidots(dsLabel, data){
         
         local headers = { "Content-Type": "application/json", "X-Auth-Token": _token};
