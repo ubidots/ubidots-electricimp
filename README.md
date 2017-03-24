@@ -27,7 +27,7 @@ Ubidots <- Ubidots.Client("YOUR_TOKEN");
 local DEV_LABEL = "ElectricImp";
 local VAR_LABEL  =  "test";
 
-device.on("get", function(data){
+device.on("get", function(data) {
     device.send("get", Ubidots.get(DEV_LABEL, data));   
 });
 ```
@@ -58,7 +58,7 @@ Ubidots <- Ubidots.Client("YOUR_TOKEN");
 local DEV_LABEL = "ElectricImp";
 local VAR_LABEL  =  "test";
 
-device.on("get", function(data){
+device.on("get", function(data) {
     device.send("get", Ubidots.getLastValue(DEV_LABEL, data));   
 });
 ```
@@ -124,7 +124,7 @@ Ubidots <- Ubidots.Client("YOUR_TOKEN");
 
 local DEV_LABEL = "ElectricImp";
 
-device.on("saveValue", function(data){
+device.on("saveValue", function(data) {
     
     Ubidots.sendToDevice(DEV_LABEL, data);
     server.log("Sending data to Ubidots");
@@ -154,10 +154,9 @@ function mainLoop() {
     data.humid = HumSensor.read();
     data.pressure = PressureSensor.read();
     
-    agent.send("saveValue", data);
-        
+    agent.send("saveValue", data);        
+    
     imp.wakeup(10.0, mainLoop);
-
 } 
 
 mainLoop(); 
