@@ -17,7 +17,7 @@ Ubidots <- Ubidots.Client("YOUR_TOKEN")
 
 ### Ubidots.get(dsLabel, varLabel)
 
-This function is to get the information of a variable from the Ubidots API:
+This function is to get body of a variable from the Ubidots API:
 
 **Agent Code**
 
@@ -34,7 +34,7 @@ device.on("get", function(data){
 
 **Device Code**
 
-``` 
+```c 
 function mainLoop() {
     agent.send("get", "test");
     imp.wakeup(10.0, mainLoop);
@@ -65,7 +65,7 @@ device.on("get", function(data){
 
 **Device Code**
 
-``` 
+``` c
 function mainLoop() {
     agent.send("get", "hola1");
     imp.wakeup(10.0, mainLoop);
@@ -78,9 +78,9 @@ agent.on("get", function(data) {
 });
 ```
 
-### Ubidots.sendValues(dsLabel, data)
+### Ubidots.sendToVariable(dsLabel, varLabel, data)
 
-This function is to send values to Ubidots. On the following example code you'll be able to send one value to Ubidots:
+This function is to send one value to a variable:
 
 **Agent Code**
 
@@ -91,7 +91,7 @@ local DEV_LABEL = "ElectricImp";
 local VAR_LABEL  =  "test";
 
 device.on("saveValue", function(value) {
-    Ubidots.sendValues(DEV_LABEL, VAR_LABEL, value);    
+    Ubidots.sendToVariable(DEV_LABEL, VAR_LABEL, value);    
     server.log("Sending data to Ubidots");
     server.log(value);
 }); 
@@ -100,7 +100,7 @@ device.on("saveValue", function(value) {
 
 **Device Code**
 
-``` 
+``` c
 sensor <- hardware.pin9;
 sensor.configure(ANALOG_IN);
 
@@ -111,4 +111,54 @@ function mainLoop() {
 } 
 
 mainLoop();
+```
+
+### Ubidots.sendToDevice(dsLabel, data)
+
+This function is to send multiple variables to a device:
+
+**Agent Code**
+
+```c
+Ubidots <- Ubidots.Client("YOUR_TOKEN");
+
+local DEV_LABEL = "ElectricImp";
+
+device.on("saveValue", function(data){
+    
+    Ubidots.sendToDevice(DEV_LABEL, data);
+    server.log("Sending data to Ubidots");
+    server.log(http.jsonencode(data));
+});
+```
+
+**Device Code**
+
+```c
+data <- {};
+data.temp <- 0;
+data.humid <- 0;
+data.pressure <- 0;
+
+TempSensor <- hardware.pin9;
+TempSensor.configure(ANALOG_IN);
+
+HumSensor <- hardware.pin8;
+HumSensor.configure(ANALOG_IN);
+
+PressureSensor <- hardware.pin5;
+PressureSensor.configure(ANALOG_IN);
+
+function mainLoop() {
+    data.temp = TempSensor.read();
+    data.humid = HumSensor.read();
+    data.pressure = PressureSensor.read();
+    
+    agent.send("saveValue", data);
+        
+    imp.wakeup(10.0, mainLoop);
+
+} 
+
+mainLoop(); 
 ```
