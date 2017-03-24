@@ -23,9 +23,13 @@ class Ubidots.Client {
     }
     /*********************************************************************
      * This function is to get variable information from the Ubidots API
-     * @arg 
-     * @return 
+     * @arg dsLabel device label where you will get the data 
+     * @arg varLabel variable label where you will get the data 
+     * @return response.body 
      *********************************************************************/
+
+    @arg id the id where you will get the data
+ * @return num the data that you get from the Ubidots API
     function get(dsLabel, varLabel) {
 
         local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
@@ -41,8 +45,9 @@ class Ubidots.Client {
     }
     /*********************************************************************
      * This function is to get the last value from the Ubidots API
-     * @arg labels the labels where you will get the data (Data Source and Variable)
-     * @return num the data that you get from the Ubidots API
+     * @arg dsLabel device label where you will get the data 
+     * @arg varLabel variable label where you will get the data 
+     * @return value the last value of the data from the Ubidots API
      *********************************************************************/
     function getLastValue(dsLabel, varLabel) {
 
@@ -51,10 +56,13 @@ class Ubidots.Client {
         return value;
     }
     /*********************************************************************
-     * Send the data of all variables that you added
-     * @reutrn 
+     * Send one value to a variable
+     * @arg dsLabel device label to save in a struct
+     * @arg varLabel variable label to save in a struct
+     * @arg data the value of the variable that you want to send
+     * @return response send one value to a variable 
      ********************************************************************/
-    function sendValues(dsLabel, varLabel, data) {
+     function sendToVariable(dsLabel, varLabel, data) {
         
         local tpData = typeof data;
         local body = "";
@@ -70,6 +78,24 @@ class Ubidots.Client {
         local headers = { "Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + dsLabel + "/" + varLabel + "/values";
         local request = http.post(url, headers, body); 
-        return request.sendsync();
+        local response =  request.sendsync();
+        return response;  
+    }
+    /*********************************************************************
+     * Send multiple variables to a device 
+     * @arg dsLabel device label to save in a struct
+     * @arg varLabel variable label to save in a struct
+     * @arg data the value of the variable that you want to send
+     * @return response send multiple variables to a device
+     ********************************************************************/
+    function sendToDevice(dsLabel, data) {
+        
+        local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
+        local url = _SERVER + "/api/v1.6/devices/" + dsLabel;
+        local body = http.jsonencode(data);
+        local request = http.post(url, headers, body); 
+        local response =  request.sendsync();
+        return response;
     }
 }
+
