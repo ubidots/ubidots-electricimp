@@ -1,5 +1,5 @@
 function mainLoop() {
-    agent.send("get", "test");
+    agent.send("get", "temp");
     imp.wakeup(10.0, mainLoop);
 } 
 
