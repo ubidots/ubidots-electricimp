@@ -1,10 +1,9 @@
 Ubidots <- Ubidots.Client("YOUR_TOKEN");
 
-local DEV_LABEL = "ElectricImp";
-local VAR_LABEL  =  "test";
+local VAR_LABEL  =  "humidity";
 
 device.on("saveValue", function(value) {
-    Ubidots.sendToVariable(DEV_LABEL, VAR_LABEL, value);    
+    Ubidots.sendToVariable(VAR_LABEL, value);    
     server.log("Sending data to Ubidots");
     server.log(value);
 });  
