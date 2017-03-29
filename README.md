@@ -6,14 +6,13 @@ To add this library to your project, add ```#require "Ubidots.class.nut:1.0.0"``
 
 ##  Class Usage 
 
-### Constuctor: Ubidots.Client(token, server)
+### Constructor: Ubidots.Client(token, server)
 
 To create a new Ubidots client assign your Ubidots' **Token** to the constructor:
 
 ```c
 Ubidots <- Ubidots.Client("YOUR_TOKEN")
 ```
-
 ##  Class Methods 
 
 
@@ -63,7 +62,6 @@ local VAR_LABEL  =  "test";
 Ubidots.sendToVariable(DEV_LABEL, VAR_LABEL, 2.8);    
 
 ```
-
 
 ### Ubidots.sendToDevice(dsLabel, data)
 

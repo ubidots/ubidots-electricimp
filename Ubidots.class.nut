@@ -5,6 +5,7 @@
 // Made by Maria Carlina Hernandez for Ubidots
 
 
+
 // create a namespace
 
 if (!("Ubidots" in getroottable())) Ubidots <- {};
@@ -61,6 +62,7 @@ class Ubidots.Client {
      * @return response send one value to a variable 
      ********************************************************************/
      function sendToVariable(dsLabel, varLabel, data) {
+
         local tpData = typeof data;
         local body = "";
         
@@ -79,7 +81,7 @@ class Ubidots.Client {
         return response;  
     }
     /*********************************************************************
-     * Send multiple variables to a device see 
+     * Send multiple variables to a device
      * @arg dsLabel device label to save in a struct
      * @arg varLabel variable label to save in a struct
      * @arg data the value of the variable that you want to send
@@ -95,3 +97,4 @@ class Ubidots.Client {
         return response;
     }
 }
+
