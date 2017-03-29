@@ -5,7 +5,6 @@
 // Made by Maria Carlina Hernandez for Ubidots
 
 
-
 // create a namespace
 
 if (!("Ubidots" in getroottable())) Ubidots <- {};
@@ -16,6 +15,7 @@ class Ubidots.Client {
 
     _SERVER = "http://things.ubidots.com"
     _token =  null;
+    _dsLabel  = imp.configparams.deviceid;
 
 
     //  constructor
@@ -23,6 +23,15 @@ class Ubidots.Client {
         this._token = token;
 
         if (SERVER != null) this._SERVER = SERVER;
+    }
+    /*********************************************************************
+     * This function is to set you data source name
+     * @arg dsName is the name of your data source name 
+     * @return true uppon succes
+     *********************************************************************/
+    function setDeviceName(dsName){
+        _dsLabel = dsName
+        return true 
     }
     /*********************************************************************
      * This function is to get variable information from the Ubidots API
@@ -56,13 +65,11 @@ class Ubidots.Client {
     /*********************************************************************
      * Send one value to a variable 
      * see https://ubidots.com/docs/api/index.html#send-values-to-one-variable
-     * @arg dsLabel device label to save in a struct
      * @arg varLabel variable label to save in a struct
      * @arg data the value of the variable that you want to send
      * @return response send one value to a variable 
      ********************************************************************/
-     function sendToVariable(dsLabel, varLabel, data) {
-
+     function sendToVariable(varLabel, data) {
         local tpData = typeof data;
         local body = "";
         
@@ -75,26 +82,23 @@ class Ubidots.Client {
         }
         
         local headers = { "Content-Type": "application/json", "X-Auth-Token": _token};
-        local url = _SERVER + "/api/v1.6/devices/" + dsLabel + "/" + varLabel + "/values";
+        local url = _SERVER + "/api/v1.6/devices/" + _dsLabel + "/" + varLabel + "/values";
         local request = http.post(url, headers, body); 
         local response =  request.sendsync();
         return response;  
     }
     /*********************************************************************
      * Send multiple variables to a device
-     * @arg dsLabel device label to save in a struct
-     * @arg varLabel variable label to save in a struct
-     * @arg data the value of the variable that you want to send
+     * @arg data table with the values that you want to send
      * @return response send multiple variables to a device
      ********************************************************************/
-    function sendToDevice(dsLabel, data) {
+    function sendToDevice(data) {
         
         local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
-        local url = _SERVER + "/api/v1.6/devices/" + dsLabel;
+        local url = _SERVER + "/api/v1.6/devices/" + _dsLabel;
         local body = http.jsonencode(data);
         local request = http.post(url, headers, body); 
         local response =  request.sendsync();
         return response;
     }
 }
-
