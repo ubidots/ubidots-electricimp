@@ -39,7 +39,7 @@ class Ubidots.Client {
      * @arg varLabel variable label where you will get the data 
      * @return response.body see https://ubidots.com/docs/api/index.html#get-values
      *********************************************************************/
-    function get(dsLabel, varLabel, callback = null) {
+    function get(dsLabel, varLabel, callback) {
         local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + dsLabel + "/" + varLabel + "/values?page-size=1";
         local request = http.get(url, headers);
@@ -60,7 +60,7 @@ class Ubidots.Client {
      * @arg varLabel variable label where you will get the data 
      * @return float:value the last value of the data from the Ubidots API
      *********************************************************************/
-    function getLastValue(dsLabel, varLabel, callback = null) {
+    function getLastValue(dsLabel, varLabel, callback) {
         local table = get(dsLabel, varLabel, function(resp){
             local respJson = http.jsondecode(resp);    
             if(callback == null){
