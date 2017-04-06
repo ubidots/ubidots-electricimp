@@ -61,7 +61,7 @@ class Ubidots.Client {
      * @return float:value the last value of the data from the Ubidots API
      *********************************************************************/
     function getLastValue(dsLabel, varLabel, callback) {
-        local table = get(dsLabel, varLabel, function(resp){
+        get(dsLabel, varLabel, function(resp){
             local respJson = http.jsondecode(resp);    
             if(callback == null){
                 return;
