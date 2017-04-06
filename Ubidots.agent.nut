@@ -11,7 +11,7 @@ if (!("Ubidots" in getroottable())) Ubidots <- {};
 
 class Ubidots.Client {
 
-    static version = [1, 0, 0];
+    static version = "1.0.0";
 
     _SERVER = "http://things.ubidots.com"
     _token =  null;
@@ -39,17 +39,20 @@ class Ubidots.Client {
      * @arg varLabel variable label where you will get the data 
      * @return response.body see https://ubidots.com/docs/api/index.html#get-values
      *********************************************************************/
-    function get(dsLabel, varLabel) {
+    function get(dsLabel, varLabel, callback = null) {
         local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + dsLabel + "/" + varLabel + "/values?page-size=1";
-        local request = http.get(url, headers); 
-        local response = request.sendsync();
-
-        if (response.statuscode != 200) {
-            server.error("eror sending message: " + response.body);
-            return null;
-        }
-        return response.body;
+        local request = http.get(url, headers);
+        request.sendasync(function(resp) {
+            if(callback != null){
+                if (resp.statuscode != 200) {
+                    server.error("error sending message: " + response.body);
+                    callback(null);
+                } else {
+                    callback(resp.body);
+                }
+            }
+        }.bindenv(this));
     }
     /*********************************************************************
      * This function is to get the last value from the Ubidots API
@@ -57,10 +60,18 @@ class Ubidots.Client {
      * @arg varLabel variable label where you will get the data 
      * @return float:value the last value of the data from the Ubidots API
      *********************************************************************/
-    function getLastValue(dsLabel, varLabel) {
-        local table = http.jsondecode(get(dsLabel, varLabel));
-        local value = table.results[0].value;
-        return value;
+    function getLastValue(dsLabel, varLabel, callback = null) {
+        local table = get(dsLabel, varLabel, function(resp){
+            local respJson = http.jsondecode(resp);    
+            if(callback == null){
+                return;
+            }
+            try {
+                callback(respJson.results[0].value);
+            } catch (ex) {
+                callback(null);
+            }
+        });
     }
     /*********************************************************************
      * Send one value to a variable 
@@ -69,7 +80,7 @@ class Ubidots.Client {
      * @arg data the value of the variable that you want to send
      * @return response send one value to a variable 
      ********************************************************************/
-     function sendToVariable(varLabel, data) {
+     function sendToVariable(varLabel, data, callback = null) {
         local tpData = typeof data;
         local body = "";
         
@@ -80,25 +91,32 @@ class Ubidots.Client {
         } else {
             body  = http.jsonencode(data);
         }
-        
+    
         local headers = { "Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + _dsLabel + "/" + varLabel + "/values";
         local request = http.post(url, headers, body); 
-        local response =  request.sendsync();
-        return response;  
+        request.sendasync(function(resp) {
+            if(callback != null){
+                callback(resp);
+            }
+        }.bindenv(this));
     }
     /*********************************************************************
      * Send multiple variables to a device
      * @arg data table with the values that you want to send
      * @return response send multiple variables to a device
      ********************************************************************/
-    function sendToDevice(data) {
+    function sendToDevice(data, callback = null) {
         
         local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + _dsLabel;
         local body = http.jsonencode(data);
         local request = http.post(url, headers, body); 
-        local response =  request.sendsync();
-        return response;
+        request.sendasync(function(resp) {
+            if(callback != null){
+                callback(resp);
+            }
+        }.bindenv(this));
     }
 }
+
