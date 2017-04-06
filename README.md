@@ -24,7 +24,7 @@ This function is to to set you data source name. The library set the device ID o
 Ubidots.setDeviceName("device_name_here")
 ```
 
-### Ubidots.get(dsLabel, varLabel)
+### Ubidots.get(dsLabel, varLabel, callback = null)
 
 This function is to get body of a variable from the Ubidots API. Assign the device and variable labels from Ubidots:
 
@@ -35,12 +35,12 @@ local DEV_LABEL = "device_label_here";
 local VAR_LABEL  =  "var_label_here";
 
 // e.i: {"count": 774, ... , "results": [{"value": 2.8, "timestamp":1490736636651, "context": {}}, ... ]}
-Ubidots.get(DEV_LABEL, VAR_LABEL);
+Ubidots.get(DEV_LABEL, VAR_LABEL, function(v){
+    server.log(v);
+});
 ```
 
-To be able to see the body returned you have to print it on the console.
-
-### Ubidots.getLastValue(dsLabel, varLabel)
+### Ubidots.getLastValue(dsLabel, varLabel, callback = null)
 
 This function is to get the float last value of a variable from the Ubidots API. Assign the device and variable labels from Ubidots:
 
@@ -51,12 +51,12 @@ local DEV_LABEL = "device_label_here";
 local VAR_LABEL  =  "variable_label_here";
 
 // e.i: 2.8
-Ubidots.getLastValue(DEV_LABEL, VAR_LABEL); 
+Ubidots.getLastValue(DEV_LABEL, VAR_LABEL, function(v){
+    server.log(v);
+});
 ```
 
-To be able to see the value returned you have to print it on the console.
-
-### Ubidots.sendToVariable(varLabel, data)
+### Ubidots.sendToVariable(varLabel, data, callback = null)
 
 This function is to send one value to a variable. The value is float type:
 
@@ -70,7 +70,7 @@ Ubidots.sendToVariable(VAR_LABEL, 2.8);
 ```
 
 
-### Ubidots.sendToDevice(data)
+### Ubidots.sendToDevice(data, callback = null)
 
 This function is to send multiple variables to a device. Build a table to send mutiple variables to Ubidots:
 
