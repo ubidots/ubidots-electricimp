@@ -24,7 +24,7 @@ This function is to to set you data source name. The library set the device ID o
 Ubidots.setDeviceName("device_name_here")
 ```
 
-### Ubidots.get(dsLabel, varLabel, callback = null)
+### Ubidots.get(dsLabel, varLabel, callback)
 
 This function is to get body of a variable from the Ubidots API. Assign the device and variable labels from Ubidots:
 
@@ -40,7 +40,7 @@ Ubidots.get(DEV_LABEL, VAR_LABEL, function(v){
 });
 ```
 
-### Ubidots.getLastValue(dsLabel, varLabel, callback = null)
+### Ubidots.getLastValue(dsLabel, varLabel, callback)
 
 This function is to get the float last value of a variable from the Ubidots API. Assign the device and variable labels from Ubidots:
 
