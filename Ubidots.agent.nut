@@ -11,7 +11,7 @@ if (!("Ubidots" in getroottable())) Ubidots <- {};
 
 class Ubidots.Client {
 
-    static version = "1.0.0";
+    static VERSION = "1.0.0";
 
     _SERVER = "http://things.ubidots.com"
     _token =  null;
@@ -37,6 +37,7 @@ class Ubidots.Client {
      * This function is to get variable information from the Ubidots API
      * @arg dsLabel device label where you will get the data 
      * @arg varLabel variable label where you will get the data 
+     * @arg callback the response object returned by httprequest.sendasync()	
      * @return response.body see https://ubidots.com/docs/api/index.html#get-values
      *********************************************************************/
     function get(dsLabel, varLabel, callback) {
@@ -58,6 +59,7 @@ class Ubidots.Client {
      * This function is to get the last value from the Ubidots API
      * @arg dsLabel device label where you will get the data 
      * @arg varLabel variable label where you will get the data 
+     * @arg callback the response object returned by httprequest.sendasync()	
      * @return float:value the last value of the data from the Ubidots API
      *********************************************************************/
     function getLastValue(dsLabel, varLabel, callback) {
@@ -78,6 +80,7 @@ class Ubidots.Client {
      * see https://ubidots.com/docs/api/index.html#send-values-to-one-variable
      * @arg varLabel variable label to save in a struct
      * @arg data the value of the variable that you want to send
+     * @arg callback the response object returned by httprequest.sendasync()	
      * @return response send one value to a variable 
      ********************************************************************/
      function sendToVariable(varLabel, data, callback = null) {
@@ -104,6 +107,7 @@ class Ubidots.Client {
     /*********************************************************************
      * Send multiple variables to a device
      * @arg data table with the values that you want to send
+     * @arg callback the response object returned by httprequest.sendasync()	
      * @return response send multiple variables to a device
      ********************************************************************/
     function sendToDevice(data, callback = null) {

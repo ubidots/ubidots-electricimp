@@ -26,7 +26,7 @@ Ubidots.setDeviceName("device_name_here")
 
 ### Ubidots.get(dsLabel, varLabel, callback)
 
-This function is to get body of a variable from the Ubidots API. Assign the device and variable labels from Ubidots:
+This function is to get body of a variable from the Ubidots API. To be able to get the body of a variable from Ubidot you have to assign the device and variable labels. The callback function take the parameter: resp. The resp parameter is a table containing the response from the server with the  message received. 
 
 ```c
 Ubidots <- Ubidots.Client("YOUR_TOKEN");
@@ -42,7 +42,8 @@ Ubidots.get(DEV_LABEL, VAR_LABEL, function(v){
 
 ### Ubidots.getLastValue(dsLabel, varLabel, callback)
 
-This function is to get the float last value of a variable from the Ubidots API. Assign the device and variable labels from Ubidots:
+This function is to get the float last value of a variable from the Ubidots API. To be able to get the last value of a variable from Ubidot you have to assign the device and variable labels. The callback function take the parameter: resp. The resp parameter is a table containing the response from the server with the  message received. 
+
 
 ```c
 Ubidots <- Ubidots.Client("YOUR_TOKEN");
@@ -58,7 +59,8 @@ Ubidots.getLastValue(DEV_LABEL, VAR_LABEL, function(v){
 
 ### Ubidots.sendToVariable(varLabel, data, callback = null)
 
-This function is to send one value to a variable. The value is float type:
+This function is to send one value to a variable. To be able to send values to a variable you have to assign the variable label where you want receive the data; the value is float type. This method also optionally takes a callback that take the response. The response will always be the response object returned by httprequest.sendasync(). 
+
 
 ```c
 Ubidots <- Ubidots.Client("YOUR_TOKEN");
@@ -66,13 +68,13 @@ Ubidots <- Ubidots.Client("YOUR_TOKEN");
 local VAR_LABEL  =  "test";
 
 // sending 2.8 to Ubidots:  { "value": 2.8 }
-Ubidots.sendToVariable(VAR_LABEL, 2.8);    
+Ubidots.sendToVariable(VAR_LABEL, 2.8); 
 ```
 
 
 ### Ubidots.sendToDevice(data, callback = null)
 
-This function is to send multiple variables to a device. Build a table to send mutiple variables to Ubidots:
+This function is to send multiple variables to a device. To be able to send multiple values to Ubidots you have to build a table to send it. This method also optionally takes a callback that take the response. The response will always be the response object returned by httprequest.sendasync(). 
 
 ```c
 Ubidots <- Ubidots.Client("YOUR_TOKEN");
