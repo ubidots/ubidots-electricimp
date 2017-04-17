@@ -2,7 +2,7 @@
 
 The Ubidots library allows you to easily integrate your agent code with the Ubidots Platform. This library provides an easy way to to send multiple values to the Ubidots API, you just need the name and the value that you want to send. In addition you are able to get the last value from a variable of your Ubidots account.
 
-To add this library to your project, add ```#require "Ubidots.class.nut:1.0.0"```  to the top of your agent code.
+To add this library to your project, add ```#require "Ubidots.agent.lib.nut:1.0.0"```  to the top of your agent code.
 
 ##  Class Usage 
 
@@ -35,7 +35,7 @@ local DEV_LABEL = "device_label_here";
 local VAR_LABEL  =  "var_label_here";
 
 // e.i: {"count": 774, ... , "results": [{"value": 2.8, "timestamp":1490736636651, "context": {}}, ... ]}
-Ubidots.get(DEV_LABEL, VAR_LABEL, function(v){
+Ubidots.get(DEV_LABEL, VAR_LABEL, function(v) {
     server.log(v);
 });
 ```
@@ -52,7 +52,7 @@ local DEV_LABEL = "device_label_here";
 local VAR_LABEL  =  "variable_label_here";
 
 // e.i: 2.8
-Ubidots.getLastValue(DEV_LABEL, VAR_LABEL, function(v){
+Ubidots.getLastValue(DEV_LABEL, VAR_LABEL, function(v) {
     server.log(v);
 });
 ```
