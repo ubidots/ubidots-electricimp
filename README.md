@@ -1,95 +1,105 @@
-# Ubidots v1.0.0
+# Ubidots 1.0.0
 
-The Ubidots library allows you to easily integrate your agent code with the Ubidots Platform. This library provides an easy way to to send multiple values to the Ubidots API, you just need the name and the value that you want to send. In addition you are able to get the last value from a variable of your Ubidots account.
+This library allows you to easily integrate the Ubidots Platform into your agent code. It provides an easy way to to send multiple values to the Ubidots API &mdash; you just need the name and the value that you want to send. In addition, you are able to get the last value from a variable of your Ubidots account.
 
-To add this library to your project, add ```#require "Ubidots.agent.lib.nut:1.0.0"```  to the top of your agent code.
+**To add this library to your project, add** ```#require "Ubidots.agent.lib.nut:1.0.0"``` **to the top of your agent code.**
 
-##  Class Usage 
+## Class Usage 
 
-### Constructor: Ubidots.Client(token, server)
+### Constructor: Ubidots.Client(*token[, server]*)
 
-To create a new Ubidots client assign your Ubidots' **Token** to the constructor:
+To create a new Ubidots client, call the constructor and pass in your Ubidots Token. Optionally, you can pass an alternative server address as a second parameter.
 
-```c
-Ubidots <- Ubidots.Client("YOUR_TOKEN")
+```squirrel
+Ubidots <- Ubidots.Client("<YOUR_TOKEN>");
 ```
 
-##  Class Methods 
+## Class Methods 
 
-## Ubidots.setDeviceName(dsName)
+## Ubidots.setDeviceName(*deviceName*)
 
-This function is to to set you data source name. The library set the device ID of your imp as device label to be a unique identifier, also you can change if you desire.
-
-```c
-Ubidots.setDeviceName("device_name_here")
+This method allows you to set the name of your data source. Typically, this will be the ID of your device, but you can pass in any string.
+ 
+```squirrel
+Ubidots.setDeviceName(imp.configparams.deviceid);
 ```
 
-### Ubidots.get(dsLabel, varLabel, callback)
+### Ubidots.get(*deviceLabel, variableLabel, callback*)
 
-This function is to get body of a variable from the Ubidots API. To be able to get the body of a variable from Ubidot you have to assign the device and variable labels. The callback function take the parameter: resp. The resp parameter is a table containing the response from the server with the  message received. 
+This method is used to get a variable’s value from the Ubidots API. To be able to do this, you first need to have assigned the device and variable labels. 
 
-```c
-Ubidots <- Ubidots.Client("YOUR_TOKEN");
+The callback function will be called when the value has been retrieved. It takes a single parameter: a table containing the data from the Ubidots server. 
 
-local DEV_LABEL = "device_label_here";
-local VAR_LABEL  =  "var_label_here";
+```squirrel
+local DEV_LABEL = "<your_device_label>";
+local VAR_LABEL = "<your_var_label>";
 
-// e.i: {"count": 774, ... , "results": [{"value": 2.8, "timestamp":1490736636651, "context": {}}, ... ]}
-Ubidots.get(DEV_LABEL, VAR_LABEL, function(v) {
-    server.log(v);
+Ubidots.get(DEV_LABEL, VAR_LABEL, function(data) {
+    foreach (key, value in data) {
+        server.log(key + ": " + typeof value);
+    }
 });
+
+// eg. displays:
+// count: integer
+// results: array
 ```
 
-### Ubidots.getLastValue(dsLabel, varLabel, callback)
+### Ubidots.getLastValue(*deviceLabel, variableLabel, callback*)
 
-This function is to get the float last value of a variable from the Ubidots API. To be able to get the last value of a variable from Ubidot you have to assign the device and variable labels. The callback function take the parameter: resp. The resp parameter is a table containing the response from the server with the  message received. 
+This method retrieves the most recent value of a variable from the Ubidots API. To be able to do this, you first need to have assigned the device and variable labels. 
+
+The callback function will be called when the value has been retrieved. It takes a single parameter: the value returned by the Ubidots server. 
 
 
-```c
-Ubidots <- Ubidots.Client("YOUR_TOKEN");
-
-local DEV_LABEL = "device_label_here";
-local VAR_LABEL  =  "variable_label_here";
-
-// e.i: 2.8
-Ubidots.getLastValue(DEV_LABEL, VAR_LABEL, function(v) {
-    server.log(v);
+```squirrel
+Ubidots.getLastValue(DEV_LABEL, VAR_LABEL, function(value) {
+    server.log(value);
 });
+
+// eg. sisplays: '2.8'
 ```
 
-### Ubidots.sendToVariable(varLabel, data, callback = null)
+### Ubidots.sendToVariable(*variableLabel, data[, callback]*)
 
-This function is to send one value to a variable. To be able to send values to a variable you have to assign the variable label where you want receive the data; the value is float type. This method also optionally takes a callback that take the response. The response will always be the response object returned by httprequest.sendasync(). 
+This method sends data to a variable, specified by its label. The value can be any an integer, a float, a string or a table.
 
+The method can take an optional callback which itself takes a single parameter into which the server's response is placed. The response is a table with the following keys:
 
-```c
-Ubidots <- Ubidots.Client("YOUR_TOKEN");
+| Key | Type | Description |
+| --- | --- | --- |
+| *statuscode* | Integer | HTTP status code (or *libcurl* error code) |
+| *headers*    | Table   | Squirrel table of returned HTTP headers |
+| *body*       | String  | Returned HTTP body (if any) |
 
-local VAR_LABEL  =  "test";
+```squirrel
+local varLab = "test";
 
-// sending 2.8 to Ubidots:  { "value": 2.8 }
-Ubidots.sendToVariable(VAR_LABEL, 2.8); 
+// Send 2.8 to Ubidots: { "value": 2.8 }
+Ubidots.sendToVariable(varLab, 2.8); 
 ```
 
+### Ubidots.sendToDevice(*data[, callback]*)
 
-### Ubidots.sendToDevice(data, callback = null)
+This method is used to send multiple variables to a device. The values are placed within a table which is passed into the method’s *data* parameter.
 
-This function is to send multiple variables to a device. To be able to send multiple values to Ubidots you have to build a table to send it. This method also optionally takes a callback that take the response. The response will always be the response object returned by httprequest.sendasync(). 
+The method can take an optional callback which itself takes a single parameter into which the server's response is placed. The response is a table with the following keys:
 
-```c
-Ubidots <- Ubidots.Client("YOUR_TOKEN");
+| Key | Type | Description |
+| --- | --- | --- |
+| *statuscode* | Integer | HTTP status code (or *libcurl* error code) |
+| *headers*    | Table   | Squirrel table of returned HTTP headers |
+| *body*       | String  | Returned HTTP body (if any) |
 
+```squirrel
 data <- {};
 data.temp <- 25;
 data.humid <- 40;
 data.pressure <- 18.13;
 
- // { "body": "{\"pressure\": [{\"status_code\": 201}], \"humid\": [{\"status_code\": 201}], \"temp\": [{\"status_code\": 201}]}", "statuscode": 200, ... , "allow": "POST, OPTIONS", "vary": "Accept, Cookie" ...
 Ubidots.sendToDevice(data);
 ```
 
-# License
+## License
 
 The library is licensed under the [MIT License](LICENSE).
-
-
