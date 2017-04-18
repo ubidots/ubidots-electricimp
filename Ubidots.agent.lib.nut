@@ -1,9 +1,29 @@
-// Copyright (c) 2017 Ubidots 
-// This file is licensed under the MIT License
-// http://opensource.org/licenses/MIT
+// MIT License
 //
-// Made by Maria Carlina Hernandez for Ubidots
+// Copyright 2017 Ubidots
+//
+// SPDX-License-Identifier: MIT
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+// EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+// OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
 
+
+// Made by Maria Carlina Hernandez for Ubidots
 
 // create a namespace
 
@@ -24,20 +44,22 @@ class Ubidots.Client {
 
         if (SERVER != null) this._SERVER = SERVER;
     }
+
     /*********************************************************************
      * This function is to set you data source name
-     * @arg dsName is the name of your data source name 
+     * @arg dsName is the name of your data source name
      * @return true uppon succes
      *********************************************************************/
     function setDeviceName(dsName){
         _dsLabel = dsName
-        return true 
+        return true
     }
+
     /*********************************************************************
      * This function is to get variable information from the Ubidots API
-     * @arg dsLabel device label where you will get the data 
-     * @arg varLabel variable label where you will get the data 
-     * @arg callback the response object returned by httprequest.sendasync()	
+     * @arg dsLabel device label where you will get the data
+     * @arg varLabel variable label where you will get the data
+     * @arg callback the response object returned by httprequest.sendasync()
      * @return response.body see https://ubidots.com/docs/api/index.html#get-values
      *********************************************************************/
     function get(dsLabel, varLabel, callback) {
@@ -55,16 +77,17 @@ class Ubidots.Client {
             }
         }.bindenv(this));
     }
+
     /*********************************************************************
      * This function is to get the last value from the Ubidots API
-     * @arg dsLabel device label where you will get the data 
-     * @arg varLabel variable label where you will get the data 
-     * @arg callback the response object returned by httprequest.sendasync()	
+     * @arg dsLabel device label where you will get the data
+     * @arg varLabel variable label where you will get the data
+     * @arg callback the response object returned by httprequest.sendasync()
      * @return float:value the last value of the data from the Ubidots API
      *********************************************************************/
     function getLastValue(dsLabel, varLabel, callback) {
         get(dsLabel, varLabel, function(resp){
-            local respJson = http.jsondecode(resp);    
+            local respJson = http.jsondecode(resp);
             if(callback == null){
                 return;
             }
@@ -75,47 +98,49 @@ class Ubidots.Client {
             }
         });
     }
+
     /*********************************************************************
-     * Send one value to a variable 
+     * Send one value to a variable
      * see https://ubidots.com/docs/api/index.html#send-values-to-one-variable
      * @arg varLabel variable label to save in a struct
      * @arg data the value of the variable that you want to send
-     * @arg callback the response object returned by httprequest.sendasync()	
-     * @return response send one value to a variable 
+     * @arg callback the response object returned by httprequest.sendasync()
+     * @return response send one value to a variable
      ********************************************************************/
      function sendToVariable(varLabel, data, callback = null) {
         local tpData = typeof data;
         local body = "";
-        
+
         if (tpData == "integer" || tpData == "float") {
             body = "{\"value\":" + data + "}";
-        } else if (tpData == "string" ) { 
+        } else if (tpData == "string" ) {
             body = data;
         } else {
             body  = http.jsonencode(data);
         }
-    
+
         local headers = { "Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + _dsLabel + "/" + varLabel + "/values";
-        local request = http.post(url, headers, body); 
+        local request = http.post(url, headers, body);
         request.sendasync(function(resp) {
             if(callback != null){
                 callback(resp);
             }
         }.bindenv(this));
     }
+
     /*********************************************************************
      * Send multiple variables to a device
      * @arg data table with the values that you want to send
-     * @arg callback the response object returned by httprequest.sendasync()	
+     * @arg callback the response object returned by httprequest.sendasync()
      * @return response send multiple variables to a device
      ********************************************************************/
     function sendToDevice(data, callback = null) {
-        
+
         local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + _dsLabel;
         local body = http.jsonencode(data);
-        local request = http.post(url, headers, body); 
+        local request = http.post(url, headers, body);
         request.sendasync(function(resp) {
             if(callback != null){
                 callback(resp);
@@ -123,4 +148,3 @@ class Ubidots.Client {
         }.bindenv(this));
     }
 }
-

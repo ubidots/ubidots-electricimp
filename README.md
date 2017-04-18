@@ -88,3 +88,8 @@ data.pressure <- 18.13;
 Ubidots.sendToDevice(data);
 ```
 
+# License
+
+The library is licensed under the [MIT License](LICENSE).
+
+
