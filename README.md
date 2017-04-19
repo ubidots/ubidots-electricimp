@@ -18,7 +18,7 @@ Ubidots <- Ubidots.Client("<YOUR_AUTH_TOKEN>");
 
 ## Ubidots.setDeviceName(*deviceName*)
 
-This method allows you to set the name of your data source (ie. a device). When you instantiate the Ubidots client object, the device name (also known as the device label) is set to the ID of your device, but this method allows you to change that to any other string. This value is used for all subsequent attempts to send data to Ubidots.
+This method allows you to set the name of your data source (ie. a device). When you instantiate the Ubidots client object, the device name is automatically set to the ID of your device. Should you prefer a more friendly name for your device, you can use this method to set the device name to any other string. This value is used for all subsequent attempts to send data to Ubidots.
  
 ```squirrel
 Ubidots.setDeviceName(imp.configparams.deviceid);
