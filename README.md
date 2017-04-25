@@ -16,12 +16,12 @@ Ubidots <- Ubidots.Client("YOUR_TOKEN")
 
 ##  Class Methods 
 
-## Ubidots.setDeviceName(dsName)
+## Ubidots.setDeviceLabel(dsName)
 
-This function is to to set you data source name. The library set the device ID of your imp as device label to be a unique identifier, also you can change if you desire.
+This function is to set a new device label. The library set the device ID of your imp as device label to be a unique identifier, but also you can change if you desire.
 
 ```c
-Ubidots.setDeviceName("device_name_here")
+Ubidots.setDeviceLabel("device_label_here")
 ```
 
 ### Ubidots.get(dsLabel, varLabel, callback)
