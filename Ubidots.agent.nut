@@ -25,12 +25,12 @@ class Ubidots.Client {
         if (SERVER != null) this._SERVER = SERVER;
     }
     /*********************************************************************
-     * This function is to set you data source name
-     * @arg dsName is the name of your data source name 
+     * This function is to set you device label
+     * @arg dsLabel is the new label that you want to assign to your device  
      * @return true uppon succes
      *********************************************************************/
-    function setDeviceName(dsName){
-        _dsLabel = dsName
+    function setDeviceLabel(dsLabel){
+        _dsLabel = dsLabel
         return true 
     }
     /*********************************************************************
