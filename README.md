@@ -16,7 +16,7 @@ Ubidots <- Ubidots.Client("YOUR_TOKEN")
 
 ##  Class Methods 
 
-## Ubidots.setDeviceLabel(dsName)
+## Ubidots.setDeviceLabel(dsLabel)
 
 This function is to set a new device label. The library set the device ID of your imp as device label to be a unique identifier, but also you can change if you desire.
 
