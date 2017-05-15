@@ -1,6 +1,7 @@
 // MIT License
 //
 // Copyright 2017 Ubidots
+// Copyright 2017 Electric
 //
 // SPDX-License-Identifier: MIT
 //
