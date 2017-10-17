@@ -4,7 +4,7 @@ This library allows you to easily connect your agent code to the [Ubidots Platfo
 
 **To add this library to your project, add** ```#require "Ubidots.agent.lib.nut:1.0.0"``` **to the top of your agent code.**
 
-## Class Usage 
+## Class Usage
 
 ### Constructor: Ubidots.Client(*token[, server]*)
 
@@ -14,11 +14,13 @@ To create a new Ubidots client object, call the constructor and pass in your Ubi
 Ubidots <- Ubidots.Client("<YOUR_AUTH_TOKEN>");
 ```
 
-## Class Methods 
+## Class Methods
 
 ## Ubidots.setDeviceLabel(*deviceLabel*)
 
 This method allows you to set the label of your data source (ie. a device). When you instantiate the Ubidots client object, the device label is automatically set to the ID of your device. Should you prefer a more friendly label for your device, you can use this method to set the device label to any other string. This value is used for all subsequent attempts to send data to Ubidots.
+
+**IMPORTANT NOTE**: The labels assigned should contain just alphanumeric characters, that's mean any special character is not allowed.
 
 ```c
 Ubidots.setDeviceLabel("device_label_here")
@@ -26,7 +28,7 @@ Ubidots.setDeviceLabel("device_label_here")
 
 ### Ubidots.get(*deviceLabel, variableLabel, callback*)
 
-This method is used to get a variable’s value from the Ubidots API. The variable is identified by its label and the label of its parent device. The method’s third parameter is a callback function which will be called when the value has been retrieved. The callback takes a single parameter: a table containing the data from the Ubidots server. 
+This method is used to get a variable’s value from the Ubidots API. The variable is identified by its label and the label of its parent device. The method’s third parameter is a callback function which will be called when the value has been retrieved. The callback takes a single parameter: a table containing the data from the Ubidots server.
 
 ```squirrel
 local devLabel = "<your_device_label>";
@@ -45,7 +47,7 @@ Ubidots.get(devLabel, varLabel, function(data) {
 
 ### Ubidots.getLastValue(*deviceLabel, variableLabel, callback*)
 
-This method retrieves the most recent value of a variable from the Ubidots API. The variable is identified by its label and the label of its parent device. The method’s third parameter is a callback function which will be called when the value has been retrieved. The callback takes a single parameter: the value returned by the Ubidots server. 
+This method retrieves the most recent value of a variable from the Ubidots API. The variable is identified by its label and the label of its parent device. The method’s third parameter is a callback function which will be called when the value has been retrieved. The callback takes a single parameter: the value returned by the Ubidots server.
 
 
 ```squirrel
@@ -75,7 +77,7 @@ The method can take an *optional* callback which itself takes a single parameter
 local varLab = "test";
 
 // Send 2.8 to Ubidots: { "value": 2.8 }
-Ubidots.sendToVariable(varLab, 2.8); 
+Ubidots.sendToVariable(varLab, 2.8);
 ```
 
 ### Ubidots.sendToDevice(*data[, callback]*)

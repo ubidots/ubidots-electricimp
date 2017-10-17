@@ -103,12 +103,17 @@ class Ubidots.Client {
         local tpData = typeof data;
         local body = "";
 
-        if (tpData == "integer" || tpData == "float") {
-            body = "{\"value\":" + data + "}";
-        } else if (tpData == "string" ) {
-            body = data;
-        } else {
-            body  = http.jsonencode(data);
+        switch (tpData) {
+            case "float":
+            case "string":
+            case "integer":
+                body = "{\"value\":" + data + "}";
+                break;
+            case "table":
+                body  = http.jsonencode(data);
+                break;
+            default:
+                throw "ERROR: Invalid data type";
         }
 
         local headers = { "Content-Type": "application/json", "X-Auth-Token": _token};
