@@ -27,7 +27,7 @@
 
 Ubidots <- Ubidots.Client("YOUR_TOKEN");
 
-//Ubidots.setDeviceLabel("electric-imp"); // to set the device name
+//Ubidots.setDeviceLabel("electricimp"); // to set the device name
 
 device.on("saveValue", function(data){
 
