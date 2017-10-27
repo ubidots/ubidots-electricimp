@@ -1,0 +1,14 @@
+{
+    "modelId": "RN4aSrMyVjZz" /* puebas */,
+    "devices": [
+        "23f6ad1fa220efee" /* Explorer Kit - Ubidots */
+    ],
+    "agentFile": "Ubidots.agent.lib.nut",
+    "deviceFile": false,
+    "stopOnFailure": true,
+    "timeout": 10,
+    "tests": [
+        "*.test.nut",
+        "tests/**/*.test.nut"
+    ]
+}
