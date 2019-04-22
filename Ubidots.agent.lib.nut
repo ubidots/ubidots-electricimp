@@ -33,7 +33,7 @@ class Ubidots.Client {
 
     static VERSION = "1.0.0";
 
-    _SERVER = "http://things.ubidots.com"
+    _SERVER = "https://things.ubidots.com"
     _token =  null;
     _dsLabel  = imp.configparams.deviceid;
 
@@ -59,17 +59,18 @@ class Ubidots.Client {
     // @arg callback the response object returned by httprequest.sendasync()
     // @return response.body see https://ubidots.com/docs/api/index.html#get-values
     function get(dsLabel, varLabel, callback) {
-        local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
-        local url = _SERVER + "/api/v1.6/devices/" + dsLabel + "/" + varLabel + "/values?page-size=1";
+        local headers = {"content-type": "application/json", "x-auth-token": this._token};
+        local url = _SERVER + "/api/v1.6/devices/" + dsLabel + "/" + varLabel ;
         local request = http.get(url, headers);
         request.sendasync(function(resp) {
-            if(callback != null){
-                if (resp.statuscode != 200) {
-                    server.error("error sending message: " + response.body);
-                    callback(null);
-                } else {
-                    callback(resp.body);
-                }
+            callback = callback || function () {};
+            local errors = {};
+            errors[404] <- "Device or Variable labels not found";
+            errors[403] <- "Authentication credentials were not provided";
+            if (errors.rawin(resp.statuscode)) {
+                callback({"status": resp.statuscode, "message": errors[resp.statuscode]}, null);
+            } else {
+                callback(null, resp.body);
             }
         }.bindenv(this));
     }
@@ -80,16 +81,13 @@ class Ubidots.Client {
     // @arg callback the response object returned by httprequest.sendasync()
     // @return float:value the last value of the data from the Ubidots API
     function getLastValue(dsLabel, varLabel, callback) {
-        get(dsLabel, varLabel, function(resp){
-            local respJson = http.jsondecode(resp);
-            if(callback == null){
-                return;
-            }
-            try {
-                callback(respJson.results[0].value);
-            } catch (ex) {
-                callback(null);
-            }
+        get(dsLabel, varLabel, function(err, response) {
+          if (response != null) {
+              response = http.jsondecode(response);
+              callback(null, response["last_value"]["value"]);
+          } else {
+              callback(err, null);
+          }
         });
     }
 
@@ -100,23 +98,23 @@ class Ubidots.Client {
     // @arg callback the response object returned by httprequest.sendasync()
     // @return response send one value to a variable
     function sendToVariable(varLabel, data, callback = null) {
-        local tpData = typeof data;
         local body = "";
-
-        if (tpData == "integer" || tpData == "float") {
-            body = "{\"value\":" + data + "}";
-        } else if (tpData == "string" ) {
-            body = data;
-        } else {
-            body  = http.jsonencode(data);
-        }
-
         local headers = { "Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + _dsLabel + "/" + varLabel + "/values";
+        if (data != null) {
+            body = "{\"value\":" + data + "}";
+        } else {
+            server.error("The data received is null. Please verify the value assigned")
+        }
         local request = http.post(url, headers, body);
         request.sendasync(function(resp) {
-            if(callback != null){
-                callback(resp);
+            callback = callback || function () {};
+            local errors = {};
+            errors[403] <- "Authentication credentials were not provided";
+            if (errors.rawin(resp.statuscode)) {
+                callback({"status": resp.statuscode, "message": errors[resp.statuscode]}, null);
+            } else {
+                callback(null, resp.body);
             }
         }.bindenv(this));
     }
@@ -126,14 +124,26 @@ class Ubidots.Client {
     // @arg callback the response object returned by httprequest.sendasync()
     // @return response send multiple variables to a device
     function sendToDevice(data, callback = null) {
-
+        local tpData = typeof data;
+        local body = "";
+        if (data != null) {
+            if (tpData == "table") {
+                body  = http.jsonencode(data);
+            } else {
+                server.error("Invalid data type");
+            }
+        }
         local headers = {"Content-Type": "application/json", "X-Auth-Token": _token};
         local url = _SERVER + "/api/v1.6/devices/" + _dsLabel;
-        local body = http.jsonencode(data);
         local request = http.post(url, headers, body);
         request.sendasync(function(resp) {
-            if(callback != null){
-                callback(resp);
+            callback = callback || function () {};
+            local errors = {};
+            errors[403] <- "Authentication credentials were not provided";
+            if (errors.rawin(resp.statuscode)) {
+                callback({"status": resp.statuscode, "message": errors[resp.statuscode]}, null);
+            } else {
+                callback(null, resp.body);
             }
         }.bindenv(this));
     }
